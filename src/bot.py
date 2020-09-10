@@ -26,13 +26,6 @@ def initialize(_current_frame_number, _total_frames, _image):
     global timestamp
     timestamp = time.strftime(f"%Mm:%Ss.{(frame_pts % 1000):03}ms", time.gmtime(frame_pts / 1000.0))
 
-    if config.verbose:
-        print(f"current frame number: {current_frame_number}")
-        print(f"current frame's timestamp: {timestamp}")
-        print(f"defined post caption:\n{post_caption()}")
-        print(f"defined comment caption:\n{comment_caption()}")
-        print(f"defines album_post caption:\n{album_post_caption()}")
-
 
 def post_caption():
     msg: str = (
@@ -45,6 +38,9 @@ def post_caption():
         f"Timestamp: {timestamp}"
         # f"\nTag: ABCXX_E1F{current_frame_number}"
     )
+    if config.verbose:
+        print(f"defined post caption:\n{msg}")
+
     return msg
 
 
@@ -53,6 +49,9 @@ def comment_caption():
         ""
         # f"Raw frame without subtitles
     )
+    if config.verbose:
+        print(f"defined comment caption:\n{msg}")
+
     return msg
 
 
@@ -62,6 +61,9 @@ def album_post_caption(post_id):
         f"{current_frame_number:0{padding}}/{total_frames:0{padding}} - {timestamp}\n"
         f"Original post: https://www.facebook.com/{post_id}"
     )
+    if config.verbose:
+        print(f"defines album_post caption:\n{msg}")
+
     return msg
 
 
@@ -109,5 +111,3 @@ def make_album_post(post_id, album_id):
     }
     response = requests.post(url, files=files)
     return response.json()
-
-
