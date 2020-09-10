@@ -16,6 +16,7 @@ def process_arguments():
     parser.add_argument("--count", type=int, help="how many frames to post starting from --start")
     parser.add_argument("--delay", type=int, help="delay between two frame-posts in seconds")
     parser.add_argument("-v", "--verbose", action="store_true", help="turns on verbosity")
+    parser.add_argument("-n", "--dry-run", action="store_true", help="offline testing, no web request made")
     args = parser.parse_args()
 
     config.page_id = args.page_id
@@ -28,6 +29,12 @@ def process_arguments():
     config.count = args.count
     config.delay = args.delay
     config.verbose = args.verbose
+    config.dry_run = args.dry_run
+
+    if config.dry_run:
+        config.verbose = True
+        print("DRY RUN MODE")
+        print("no web request will be made, a dummy response will be returned for offline app testing\n")
 
     if not os.path.isdir(config.pdir):
         print("Photo-frames directory is not valid.")
@@ -71,4 +78,5 @@ def process_arguments():
         print(f"starting frame-number: {config.start}")
         print(f"number of frames to post: {config.count}")
         print(f"delay: {config.delay} seconds")
+
 
