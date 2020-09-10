@@ -33,7 +33,13 @@ def main():
             calbum_id = ""
 
             post_response = bot.make_post()
+            error_counter = 0
             while "error" in post_response.keys():
+                if error_counter >= 10:
+                    print("error still unresolved after 10 tries, bot exiting")
+                    logger.log_error("unresolved error while requesting at /page-id/photos")
+                    sys.exit(1)
+                error_counter += 1
                 print(post_response)
                 logger.log_error(post_response)
                 print("trying again after 10 seconds")
@@ -44,7 +50,13 @@ def main():
 
             if config.cdir:
                 comment_response = bot.make_comment(post_id)
+                error_counter = 0
                 while "error" in comment_response.keys():
+                    if error_counter >= 10:
+                        print("error still unresolved after 10 tries, bot exiting")
+                        logger.log_error("unresolved error while requesting at /post-id/comments")
+                        sys.exit(1)
+                    error_counter += 1
                     print(comment_response)
                     logger.log_error(comment_response)
                     print("trying again after 10 seconds")
@@ -55,7 +67,13 @@ def main():
 
             if config.palbum_id:
                 palbum_response = bot.make_album_post(post_id, config.palbum_id, "p")
+                error_counter = 0
                 while "error" in palbum_response.keys():
+                    if error_counter >= 10:
+                        print("error still unresolved after 10 tries, bot exiting")
+                        logger.log_error("unresolved error while posting at /palbum-id/photos")
+                        sys.exit(1)
+                    error_counter += 1
                     print(palbum_response)
                     logger.log_error(palbum_response)
                     print("trying again after 10 seconds")
@@ -66,7 +84,13 @@ def main():
 
             if config.calbum_id:
                 calbum_response = bot.make_album_post(comment_id, config.calbum_id, "c")
+                error_counter = 0
                 while "error" in calbum_response.keys():
+                    if error_counter >= 10:
+                        print("error still unresolved after 10 tries, bot exiting")
+                        logger.log_error("unresolved error while posting at /calbum-id/photos")
+                        sys.exit(1)
+                    error_counter += 1
                     print(calbum_response)
                     logger.log_error(calbum_response)
                     print("trying again after 10 seconds")
@@ -76,6 +100,8 @@ def main():
                 calbum_id = calbum_response["post_id"]
 
             logger.log_posts(curren_frame, post_id, comment_id, palbum_id, calbum_id)
+            if config.verbose:
+                print(f"Sleeping for {config.delay} seconds")
             time.sleep(config.delay)
 
     except Exception as e:
