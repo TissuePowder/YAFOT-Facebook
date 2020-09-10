@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-import config
+from src import config
 
 
 def process_arguments():
@@ -71,7 +71,11 @@ def process_arguments():
             print("warning: album-id for photo-frames is not provided, photo-frames will not be added to album")
 
         if config.calbum_id:
-            print(f"album-id for comment-frames: {config.calbum_id}")
+            if not config.cdir:
+                print("ERROR: comment-frames directory not provided, not possible to post in album.")
+                sys.exit(1)
+            else:
+                print(f"album-id for comment-frames: {config.calbum_id}")
         else:
             print("warning: album-id for comment-frames is not provided, comment-frames will not be added to album")
 

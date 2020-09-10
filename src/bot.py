@@ -1,26 +1,29 @@
 import requests
 import os
 import time
-import config
+from src import config
 
 current_frame_number = ""
 total_frames = ""
-image = ""
+pimage = ""
+cimage = ""
 timestamp = ""
 padding = ""
 dummy_response = {"id": "123456789", "post_id": "987654321_123456789"}
 
 
-def initialize(_current_frame_number, _total_frames, _image):
+def initialize(_current_frame_number, _total_frames, _pimage, _cimage):
     global current_frame_number
     current_frame_number = _current_frame_number
     global total_frames
     total_frames = _total_frames
-    global image
-    image = _image
+    global pimage
+    pimage = _pimage
+    global cimage
+    cimage = _cimage
     global padding
     padding = len(str(_total_frames))
-    base_filename = os.path.basename(_image)
+    base_filename = os.path.basename(_pimage)
     filename_without_ext = os.path.splitext(base_filename)[0]
     frame_pts = int(filename_without_ext.split("_")[1].lstrip("0"))
     global timestamp
@@ -28,18 +31,16 @@ def initialize(_current_frame_number, _total_frames, _image):
 
 
 def post_caption():
-    msg: str = (
-        ""
+    newline = "\n"
+    msg = (
         # f"Some anime\n"
         # f"Episode 01 of 12\n"
-    )
-    msg += (
-        f"Frame {current_frame_number:0{padding}} of {total_frames:0{padding}}\n"
+        f"Frame {current_frame_number:0{padding}} of {total_frames}\n"
         f"Timestamp: {timestamp}"
         # f"\nTag: ABCXX_E1F{current_frame_number}"
     )
     if config.verbose:
-        print(f"defined post caption:\n{msg}")
+        print(f"defined post caption:{newline}{msg}")
 
     return msg
 
@@ -56,35 +57,34 @@ def comment_caption():
 
 
 def album_post_caption(post_id):
+    newline = "\n"
     msg = (
         # f"Episode number - "
         f"{current_frame_number:0{padding}}/{total_frames:0{padding}} - {timestamp}\n"
         f"Original post: https://www.facebook.com/{post_id}"
     )
     if config.verbose:
-        print(f"defines album_post caption:\n{msg}")
+        print(f"defined album_post caption:{newline}{msg}")
 
     return msg
 
 
 def make_post():
-    if config.dry_run:
-        return dummy_response
     caption = post_caption()
     url = (
         f"https://graph.facebook.com/{config.page_id}/photos?"
         f"caption={caption}&access_token={config.token}"
     )
     files = {
-        'image': open(image, "rb")
+        'image': open(pimage, "rb")
     }
+    if config.dry_run:
+        return dummy_response
     response = requests.post(url, files=files)
     return response.json()
 
 
 def make_comment(post_id):
-    if config.dry_run:
-        return dummy_response
     message = comment_caption()
     url = (
         f"https://graph.facebook.com/{post_id}/comments?"
@@ -92,22 +92,28 @@ def make_comment(post_id):
     )
 
     files = {
-        'image': open(image, "rb")
+        'image': open(cimage, "rb")
     }
+    if config.dry_run:
+        return dummy_response
     response = requests.post(url, files=files)
     return response.json()
 
 
-def make_album_post(post_id, album_id):
-    if config.dry_run:
-        return dummy_response
+def make_album_post(post_id, album_id, caller):
     caption = album_post_caption(post_id)
     url = (
         f"https://graph.facebook.com/{album_id}/photos?"
         f"caption={caption}&access_token={config.token}"
     )
+    if caller == "p":
+        image = pimage
+    else:
+        image = cimage
     files = {
         'image': open(image, "rb")
     }
+    if config.dry_run:
+        return dummy_response
     response = requests.post(url, files=files)
     return response.json()
