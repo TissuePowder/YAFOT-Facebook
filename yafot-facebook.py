@@ -7,6 +7,24 @@ from src import bot
 from src import logger
 
 
+def check_for_unresolved_error(error_counter, response, edge):
+    # Try 10 times before terminating the script
+    if error_counter >= 10:
+        print("Error still unresolved after 10 tries, bot exiting")
+        logger.log_error(f"Unresolved error at {edge}, bot exiting")
+        sys.exit(1)
+
+    # Log the error response only once to prevent spamming in the log file
+    if error_counter == 1:
+        print(response)
+        logger.log_error(response)
+
+    # Wait 10 seconds before trying again
+    print("Trying again after 10 seconds")
+    logger.log_error("Trying again after 10 seconds")
+    time.sleep(10)
+
+
 def main():
     try:
         # Parse arguments from commandline
@@ -30,7 +48,7 @@ def main():
 
             # Only base filenames without the directory parts are stored in the list
             # Base-filenames must be joined back with their directory part
-            pimage_basename = pframes[curren_frame - 1]  # Get the i-th file from the list
+            pimage_basename = pframes[curren_frame - 1]  # Get the (i-1)th file from the list (0 based)
             pimage = f"{config.pdir}/{pimage_basename}"  # filename = directory/ + basename
             if config.cdir:
                 cimage_basename = cframes[curren_frame - 1]
@@ -48,68 +66,42 @@ def main():
             # Ask the bot to make the post
             post_response = bot.make_post()
             error_counter = 0
-
-            while "error" in post_response.keys():
-                if error_counter >= 10:
-                    print("error still unresolved after 10 tries, bot exiting")
-                    logger.log_error("unresolved error while requesting at /page-id/photos")
-                    sys.exit(1)
+            while "post_id" not in post_response.keys():
                 error_counter += 1
-                print(post_response)
-                logger.log_error(post_response)
-                print("trying again after 10 seconds")
-                time.sleep(10)
+                check_for_unresolved_error(error_counter, post_response, "/page-id/photos")
                 post_response = bot.make_post()
 
             post_id = post_response["post_id"]  # Get the post-id from json response
 
             if config.cdir:
+                # Ask the bot to comment under the post
                 comment_response = bot.make_comment(post_id)
                 error_counter = 0
-                while "error" in comment_response.keys():
-                    if error_counter >= 10:
-                        print("error still unresolved after 10 tries, bot exiting")
-                        logger.log_error("unresolved error while requesting at /post-id/comments")
-                        sys.exit(1)
+                while "id" not in comment_response.keys():
                     error_counter += 1
-                    print(comment_response)
-                    logger.log_error(comment_response)
-                    print("trying again after 10 seconds")
-                    time.sleep(10)
+                    check_for_unresolved_error(error_counter, comment_response, "/post-id/comments")
                     comment_response = bot.make_comment(post_id)
 
                 comment_id = comment_response["id"]  # Get the comment-id from json response
 
             if config.palbum_id:
+                # Ask the bot to add the photo-frame in album
                 palbum_response = bot.make_album_post(post_id, config.palbum_id, "p")
                 error_counter = 0
-                while "error" in palbum_response.keys():
-                    if error_counter >= 10:
-                        print("error still unresolved after 10 tries, bot exiting")
-                        logger.log_error("unresolved error while posting at /palbum-id/photos")
-                        sys.exit(1)
+                while "post_id" not in palbum_response.keys():
                     error_counter += 1
-                    print(palbum_response)
-                    logger.log_error(palbum_response)
-                    print("trying again after 10 seconds")
-                    time.sleep(10)
+                    check_for_unresolved_error(error_counter, palbum_response, "/palbum-id/photos")
                     palbum_response = bot.make_album_post(post_id, config.palbum_id, "p")
 
                 palbum_id = palbum_response["post_id"]  # Get the photo-album-post-id from json response
 
             if config.calbum_id:
+                # Ask the bot to add the comment-frame in album
                 calbum_response = bot.make_album_post(comment_id, config.calbum_id, "c")
                 error_counter = 0
-                while "error" in calbum_response.keys():
-                    if error_counter >= 10:
-                        print("error still unresolved after 10 tries, bot exiting")
-                        logger.log_error("unresolved error while posting at /calbum-id/photos")
-                        sys.exit(1)
+                while "post_id" not in calbum_response.keys():
                     error_counter += 1
-                    print(calbum_response)
-                    logger.log_error(calbum_response)
-                    print("trying again after 10 seconds")
-                    time.sleep(10)
+                    check_for_unresolved_error(error_counter, calbum_response, "/calbum-id/photos")
                     calbum_response = bot.make_album_post(comment_id, config.calbum_id, "c")
 
                 calbum_id = calbum_response["post_id"]  # Get the comment-album-post-id from json response
