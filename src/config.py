@@ -1,3 +1,5 @@
+# Do not edit values of these variables here, any editing here will be ignored
+
 page_id = ""
 pdir = ""
 cdir = ""
