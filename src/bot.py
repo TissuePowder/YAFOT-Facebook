@@ -61,7 +61,7 @@ def post_caption():
 def comment_caption():
     newline = "\n"
     msg = (
-        # f"Raw frame without subtitles"
+        f"Raw frame without subtitles"
     )
     if config.verbose:
         print(f"Defined comment caption:{newline}{msg}")
