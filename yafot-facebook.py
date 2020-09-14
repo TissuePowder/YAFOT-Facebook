@@ -72,6 +72,8 @@ def main():
                 post_response = bot.make_post()
 
             post_id = post_response["post_id"]  # Get the post-id from json response
+            if config.verbose:
+                print(f"Post response: {post_response}")
 
             if config.cdir:
                 # Ask the bot to comment under the post
@@ -83,6 +85,8 @@ def main():
                     comment_response = bot.make_comment(post_id)
 
                 comment_id = comment_response["id"]  # Get the comment-id from json response
+                if config.verbose:
+                    print(f"Comment response: {comment_response}")
 
             if config.palbum_id:
                 # Ask the bot to add the photo-frame in album
@@ -94,6 +98,8 @@ def main():
                     palbum_response = bot.make_album_post(post_id, config.palbum_id, "p")
 
                 palbum_id = palbum_response["post_id"]  # Get the photo-album-post-id from json response
+                if config.verbose:
+                    print(f"Post-album response: {palbum_response}")
 
             if config.calbum_id:
                 # Ask the bot to add the comment-frame in album
@@ -105,9 +111,12 @@ def main():
                     calbum_response = bot.make_album_post(comment_id, config.calbum_id, "c")
 
                 calbum_id = calbum_response["post_id"]  # Get the comment-album-post-id from json response
+                if config.verbose:
+                    print(f"Comment-album response: {calbum_response}")
 
             # Log the id's of the posts
             logger.log_posts(curren_frame, post_id, comment_id, palbum_id, calbum_id)
+            print(f"Done posting frame-number {curren_frame}")
 
             # Wait for some time before going into the next loop
             if config.verbose:
