@@ -26,19 +26,23 @@ def initialize(_current_frame_number, _total_frames, _pimage, _cimage):
     # Zero pad the frame-number upto the number of total frames
     padding = len(str(_total_frames))
 
-    # Filename is expected in "FrameNumber_FramePTSinMilliseconds.ext" format
+    # Filename is expected in "FrameNumber_FramePTSinMilliseconds.ext" format to include timestamps
     # Follow the ffmpeg frame-extraction tutorial if you don't know how to include frame_pts in filename
     base_filename = os.path.basename(_pimage)  # Get base filename without directory parts
     filename_without_ext = os.path.splitext(base_filename)[0]  # Get filename without extension
-    frame_pts = int(filename_without_ext.split("_")[1].lstrip("0"))  # Get the frame_pts part from filename
+    frame_pts_split = filename_without_ext.split("_")
 
-    global timestamp
-    # Convert the milliseconds into sexagesimal format (hh:mm:ss.ms)
-    timestamp = time.strftime(f"%Hh:%Mm:%Ss.{(frame_pts % 1000):03}ms", time.gmtime(frame_pts / 1000.0))
-    # Most episodes are below 1 hour, so keeping 00h in timestamp is uselsess
-    # 00h: is ripped from timestamp as default
-    # If you are posting frames of soemthing that exceeds 1 hour, comment out the following line
-    timestamp = timestamp[4:]
+    # If framepts is included in filename
+    if len(frame_pts_split) > 1:
+        frame_pts = int(frame_pts_split[1].lstrip("0"))  # Get the frame_pts part from filename
+
+        global timestamp
+        # Convert the milliseconds into sexagesimal format (hh:mm:ss.ms)
+        timestamp = time.strftime(f"%Hh:%Mm:%Ss.{(frame_pts % 1000):03}ms", time.gmtime(frame_pts / 1000.0))
+        # Most episodes are below 1 hour, so keeping 00h in timestamp is uselsess
+        # 00h: is ripped from timestamp as default
+        # If you are posting frames of soemthing that exceeds 1 hour, comment out the following line
+        timestamp = timestamp[4:]
 
 
 def post_caption():
@@ -49,6 +53,7 @@ def post_caption():
         # f"Some anime\n"
         # f"Episode 01 of 12\n"
         f"Frame {current_frame_number:0{padding}} of {total_frames}\n"
+        # Comment out the following line if you aren't using timestamp
         f"Timestamp: {timestamp}"
         # f"\nTag: ABCXX_E1F{current_frame_number}"
     )
@@ -73,7 +78,9 @@ def album_post_caption(post_id):
     newline = "\n"
     msg = (
         # f"Episode number - "
-        f"{current_frame_number:0{padding}}/{total_frames:0{padding}} - {timestamp}\n"
+        f"{current_frame_number:0{padding}}/{total_frames}"
+        # Comment out the following line if you aren't using timestamp
+        f" - {timestamp}\n"
         f"Original post: https://www.facebook.com/{post_id}"
     )
     if config.verbose:
