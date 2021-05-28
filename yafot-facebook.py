@@ -42,6 +42,8 @@ def main():
         start = config.start
         end = config.start + config.count  # Loop is run in [start, end) range, so +1 isn't necessary
 
+        counter = 1 # counter for the number of frames posted
+
         # Loop body. Each iteration does four tasks related to a single frame
         # Namely, post, comment, add post-photo in album, add comment-photo in album
         for curren_frame in range(start, end):
@@ -116,12 +118,18 @@ def main():
 
             # Log the id's of the posts
             logger.log_posts(curren_frame, post_id, comment_id, palbum_id, calbum_id)
-            print(f"Done posting frame-number {curren_frame}")
 
-            # Wait for some time before going into the next loop
-            if config.verbose:
-                print(f"Sleeping for {config.delay} seconds")
-            time.sleep(config.delay)
+            time_12 = time.strftime("%I:%M:%S %p") # Get 12-hour clock time with AM/PM
+            # time_locale = time.strftime("%x") # Get locale time
+
+            print(f"{counter}. Done posting frame-number {curren_frame} - Time: {time_12}")
+
+            counter += 1
+            if(counter <= config.count):
+                # Wait for some time before going into the next loop
+                if config.verbose:
+                    print(f"Sleeping for {config.delay} seconds")
+                time.sleep(config.delay)
 
     except Exception as e:
         print(e)
