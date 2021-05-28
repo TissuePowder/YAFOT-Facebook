@@ -74,6 +74,7 @@ def main():
                 post_response = bot.make_post()
 
             post_id = post_response["post_id"]  # Get the post-id from json response
+            print(f"---> Main post done")
             if config.verbose:
                 print(f"Post response: {post_response}")
 
@@ -87,6 +88,7 @@ def main():
                     comment_response = bot.make_comment(post_id)
 
                 comment_id = comment_response["id"]  # Get the comment-id from json response
+                print(f"---> Comment done")
                 if config.verbose:
                     print(f"Comment response: {comment_response}")
 
@@ -100,6 +102,7 @@ def main():
                     palbum_response = bot.make_album_post(post_id, config.palbum_id, "p")
 
                 palbum_id = palbum_response["post_id"]  # Get the photo-album-post-id from json response
+                print(f"---> Album post done (Main)")
                 if config.verbose:
                     print(f"Post-album response: {palbum_response}")
 
@@ -113,6 +116,7 @@ def main():
                     calbum_response = bot.make_album_post(comment_id, config.calbum_id, "c")
 
                 calbum_id = calbum_response["post_id"]  # Get the comment-album-post-id from json response
+                print(f"---> Album post done (Comment)")
                 if config.verbose:
                     print(f"Comment-album response: {calbum_response}")
 
@@ -122,7 +126,7 @@ def main():
             time_12 = time.strftime("%I:%M:%S %p") # Get 12-hour clock time with AM/PM
             # time_locale = time.strftime("%x") # Get locale time
 
-            print(f"{counter}. Done posting frame-number {curren_frame} - Time: {time_12}")
+            print(f"{counter}. Done posting frame-number {curren_frame} - Time: {time_12}\n")
 
             counter += 1
             if(counter <= config.count):
