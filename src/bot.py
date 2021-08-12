@@ -47,14 +47,17 @@ def initialize(_current_frame_number, _total_frames, _pimage, _cimage):
 
 def post_caption():
     newline = "\n"
+    timestamp_msg = ""
+    if timestamp:
+        timestamp_msg = f"\nTimestamp: {timestamp}"
     # Add your desired post-caption here
     # It is recommended to execute the script in dry-run mode first to check the post captions and text formats
     msg = (
         # f"Some anime\n"
         # f"Episode 01 of 12\n"
-        f"Frame {current_frame_number:0{padding}} of {total_frames}\n"
+        f"Frame {current_frame_number:0{padding}} of {total_frames}"
         # Comment out the following line if you aren't using timestamp
-        f"Timestamp: {timestamp}"
+        f"{timestamp_msg}"
         # f"\nTag: ABCXX_E1F{current_frame_number}"
     )
     if config.verbose:
@@ -76,11 +79,14 @@ def comment_caption():
 
 def album_post_caption(post_id):
     newline = "\n"
+    timestamp_msg = ""
+    if timestamp:
+        timestamp_msg = f" - {timestamp}"
     msg = (
         # f"Episode number - "
         f"{current_frame_number:0{padding}}/{total_frames}"
         # Comment out the following line if you aren't using timestamp
-        f" - {timestamp}\n"
+        f"{timestamp_msg}\n"
         f"Original post: https://www.facebook.com/{post_id}"
     )
     if config.verbose:
