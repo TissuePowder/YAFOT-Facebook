@@ -41,8 +41,8 @@ def initialize(_current_frame_number, _total_frames, _pimage, _cimage):
         timestamp = time.strftime(f"%Hh:%Mm:%Ss.{(frame_pts % 1000):03}ms", time.gmtime(frame_pts / 1000.0))
         # Most episodes are below 1 hour, so keeping 00h in timestamp is uselsess
         # 00h: is ripped from timestamp as default
-        # If you are posting frames of soemthing that exceeds 1 hour, comment out the following line
-        timestamp = timestamp[4:]
+        if timestamp[:2] == '00':
+            timestamp = timestamp[4:]
 
 
 def post_caption():
