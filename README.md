@@ -82,7 +82,7 @@ optional arguments:
 
 ## Example
 ```
-$ python yafot-facebook.py --page-id 40927481064389 --pdir "Episode_01_subbed" --cdir "Episode_01_raw" --palbum-id 80453984612530 --token 1g34yourtoken4b56f --start 101 --count 50 --delay 180
+$ python yafot-facebook.py --page-id 40927481064389 --pdir "Episode_01_subbed" --cdir "Episode_01_raw" --palbum-id 80453984612530 --token your_token --start 101 --count 50 --delay 180
 ```
 The above command makes main posts with frames from **Episode_01_subbed** directory, posts comments with frames from **Episode_01_raw** directory, adds only main photo-frames in an album, starts from frame-number **101**, posts **50** frames and sleeps for **180** seconds between two posts.
 
