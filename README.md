@@ -33,10 +33,9 @@ $ python yafot-facebook.py
 ```
 $ python yafot-facebook.py -h
 
-usage: yafot-facebook.py [-h] --page-id PAGE_ID --pdir PDIR [--cdir CDIR]
-[--palbum-id PALBUM_ID] [--calbum-id CALBUM_ID]
---token TOKEN --start START [--count COUNT]
-[--delay DELAY] [-v] [-n]
+usage: yafot-facebook.py [-h] --page-id PAGE_ID --pdir PDIR [--cdir CDIR] [--palbum-id PALBUM_ID]
+[--calbum-id CALBUM_ID] --token TOKEN --start START [--count COUNT]
+[--delay DELAY] [--use-timestamp] [-v] [-n]
 
 optional arguments:
 -h, --help            show this help message and exit
@@ -44,13 +43,14 @@ optional arguments:
 --pdir PDIR           directory of frames for main posts
 --cdir CDIR           directory of frames to post as comments under main posts
 --palbum-id PALBUM_ID
-                      album-id to post frames from --pdir
+    album-id to post frames from --pdir
 --calbum-id CALBUM_ID
-                      album-id to post frames from --cdir
+    album-id to post frames from --cdir
 --token TOKEN         your facebook page access-token
 --start START         starting number of the frame to post
 --count COUNT         how many frames to post starting from --start
 --delay DELAY         delay between two frame-posts in seconds
+--use-timestamp       parse timestamp from filename
 -v, --verbose         turns on verbosity
 -n, --dry-run         offline testing, no web request made
 ```
@@ -74,6 +74,8 @@ optional arguments:
 **--count** - How many frames to post starting from _--start_
 
 **--delay** - Delay or waiting time between two different phases. A single phase carries out all requests for each post, ie, posting, commenting and adding the images to albums.
+
+**--use-timestamp** - If you extract the frames using ffmpeg's __-frame_pts 1__ option, then use this argument to make the bot parse timestamp from the filenames.
 
 **--verbose** - Turns on verbosity.
 
@@ -100,6 +102,12 @@ __Filenames must be in FrameNumber_FramePTSinMilliseconds.jpg format to include 
 ```
 $ ffmpeg -copyts -i "Episode_01.mkv" -r 1000 -vf "mpdecimate=hi=64*12*15:lo=64*5*15:frac=1",subtitles=sub1.ass -frame_pts true -vsync vfr -q:v 5 "Sub_01/%08d.jpg" -r 1000 -vf "mpdecimate=hi=64*12*15:lo=64*5*15:frac=1" -frame_pts true -vsync vfr -q:v 5 "Raw_01/%08d.jpg"
 ```
+__If you want the bot to parse timestamp, then add a serial to the filename.__
+You can use the following command inside your frame's directory if you are using linux.
+```
+$ a=1; for i in *; do mv $i $(printf "%06d" "$a")_$i; let a=$a+1; done
+```
+
 **Explanation of the above command:**
 
 **-copyts**: Asks ffmpeg not to sanitize timestamps. Important to keep the subbed and raw frames in sync.
@@ -128,4 +136,4 @@ Note that you have to add the serial numbers to the frames yourself. For further
 
 
 ## Features
-Go to release section for details as this project is still under development. Open a PR if you want to contribute. 
+Go to release section for details as this project is still under development. Open a PR if you want to contribute.
