@@ -9,5 +9,6 @@ token = ""
 start = ""
 count = ""
 delay = ""
+use_timestamp = False
 verbose = False
 dry_run = False

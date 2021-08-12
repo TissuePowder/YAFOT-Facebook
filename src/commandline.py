@@ -16,6 +16,7 @@ def process_arguments():
     parser.add_argument("--start", type=int, required=True, help="starting number of the frame to post")
     parser.add_argument("--count", type=int, help="how many frames to post starting from --start")
     parser.add_argument("--delay", type=int, help="delay between two frame-posts in seconds")
+    parser.add_argument("--use-timestamp", action="store_true", help="parse timestamp from filename")
     parser.add_argument("-v", "--verbose", action="store_true", help="turns on verbosity")
     parser.add_argument("-n", "--dry-run", action="store_true", help="offline testing, no web request made")
     args = parser.parse_args()
@@ -30,6 +31,7 @@ def process_arguments():
     config.start = args.start
     config.count = args.count
     config.delay = args.delay
+    config.use_timestamp = args.use_timestamp
     config.verbose = args.verbose
     config.dry_run = args.dry_run
 

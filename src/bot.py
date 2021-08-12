@@ -28,21 +28,22 @@ def initialize(_current_frame_number, _total_frames, _pimage, _cimage):
 
     # Filename is expected in "FrameNumber_FramePTSinMilliseconds.ext" format to include timestamps
     # Follow the ffmpeg frame-extraction tutorial if you don't know how to include frame_pts in filename
-    base_filename = os.path.basename(_pimage)  # Get base filename without directory parts
-    filename_without_ext = os.path.splitext(base_filename)[0]  # Get filename without extension
-    frame_pts_split = filename_without_ext.split("_")
+    if config.use_timestamp:
+        base_filename = os.path.basename(_pimage)  # Get base filename without directory parts
+        filename_without_ext = os.path.splitext(base_filename)[0]  # Get filename without extension
+        frame_pts_split = filename_without_ext.split("_")
 
-    # If framepts is included in filename
-    if len(frame_pts_split) > 1:
-        frame_pts = int(frame_pts_split[1].lstrip("0"))  # Get the frame_pts part from filename
+        # If framepts is included in filename
+        if len(frame_pts_split) > 1:
+            frame_pts = int(frame_pts_split[1].lstrip("0"))  # Get the frame_pts part from filename
 
-        global timestamp
-        # Convert the milliseconds into sexagesimal format (hh:mm:ss.ms)
-        timestamp = time.strftime(f"%Hh:%Mm:%Ss.{(frame_pts % 1000):03}ms", time.gmtime(frame_pts / 1000.0))
-        # Most episodes are below 1 hour, so keeping 00h in timestamp is uselsess
-        # 00h: is ripped from timestamp as default
-        if timestamp[:2] == '00':
-            timestamp = timestamp[4:]
+            global timestamp
+            # Convert the milliseconds into sexagesimal format (hh:mm:ss.ms)
+            timestamp = time.strftime(f"%Hh:%Mm:%Ss.{(frame_pts % 1000):03}ms", time.gmtime(frame_pts / 1000.0))
+            # Most episodes are below 1 hour, so keeping 00h in timestamp is uselsess
+            # 00h: is ripped from timestamp as default
+            if timestamp[:2] == '00':
+                timestamp = timestamp[4:]
 
 
 def post_caption():
