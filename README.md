@@ -3,9 +3,8 @@ Yet Another Frame-bOT for facebook. As the name suggests, this is a command-line
 
 Bot is mainly created to post in _Every Frame in Order_ pages, but can be used for similar other posting and spamming. If you don't know about this type of facebook pages, check the links below for example.
 
-- [Every March comes in like a lion Frame in Order](https://www.facebook.com/3gatsunolionframes)
 - [Every Houseki no Kuni Frame in Order](https://www.facebook.com/hnkframes)
-- [Every JoJo's Bizarre Adventure Frame In Order](https://www.facebook.com/EveryJoJoFrames)
+- [Every Ping Pong the Animation Frame in Order](https://www.facebook.com/pingpongframes)
 
 
 ## Requirements
